@@ -21,6 +21,14 @@ var userSchema = mongoose.Schema({
 
 var userModel = mongoose.model('users', userSchema);
 
+var wodSchema = mongoose.Schema({
+    name: String,
+    wod: String,
+    date: String
+});
+
+var wodModel = mongoose.model('wods', wodSchema);
+
 /* création d'un utilisateur. */
 router.post('/signup', (req, res) => {
   if (req.body.lastName !== '' && req.body.firstName !== '' &&
@@ -59,5 +67,38 @@ router.get('/signin', (req, res) => {
       }
     });
 });
+
+/* création d'un wod (manuelle via postman). */
+router.post('/addwod', (req, res) => {
+
+    var newWod = new wodModel ({
+      name: req.body.name,
+      wod: req.body.wod,
+      date: req.body.today
+    })
+
+    newWod.save(
+      (error, wod) => {
+        console.log(wod)
+        res.json({ result: true, wod });
+      }
+    );
+});
+
+/* mise à jour du wod. */
+router.put('/wod', (req, res) => {
+  wodModel.findOneAndUpdate (
+    {name: "wod"},
+    {
+      wod: req.body.wod,
+      date: req.body.today
+    }, {
+      new: true
+    }, function(error, wod) {
+      console.log(wod)
+      res.json({ result: true, wod });
+    });
+  });
+
 
 module.exports = router;
