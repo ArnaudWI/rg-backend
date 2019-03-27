@@ -42,7 +42,7 @@ router.put('/', (req, res) => {
     {name: "wod"},
     {
       wod: req.body.wod,
-      date: req.body.today
+      date: req.body.date
     }, {
       new: true
     }, function(error, wod) {
