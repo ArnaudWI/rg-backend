@@ -7,7 +7,7 @@ const db = require('../config/db');
 
 mongoose.connect(db.config.url, db.config.options, error => {
   if (!error) {
-    console.info('Server is running');
+    console.info('UserServer is running');
   } else {
     console.error(error);
   };

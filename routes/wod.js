@@ -8,7 +8,7 @@ const db = require('../config/db');
 
 mongoose.connect(db.config.url, db.config.options, error => {
   if (!error) {
-    console.info('Server is running');
+    console.info('WodServer is running');
   } else {
     console.error(error);
   };
@@ -26,7 +26,6 @@ router.post('/addwod', (req, res) => {
 
     newWod.save(
       (error, wod) => {
-        console.log(wod)
         res.json({ result: true, wod });
       }
     );
@@ -42,7 +41,6 @@ router.put('/', (req, res) => {
     }, {
       new: true
     }, function(error, wod) {
-      console.log(wod);
       res.json({ result: true, wod });
     });
   });

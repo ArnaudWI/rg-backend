@@ -21,6 +21,41 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
+// Intégration des sockets (après var server on on l'utilise dans notre 'const io = socketIO(server)')
+const socketIO = require('socket.io');
+const io = socketIO(server);
+const db = require('../config/db');
+
+// const sockets = require('../sockets/sockets');
+
+io.on('connection', socket => {
+  console.log(`${socket.id} has logged in.`);
+
+  socket.on('updateWod', function(wod , date, name) {
+    db.wods.findOneAndUpdate (
+      {name: "wod"},
+      {
+        wod: wod,
+        date: date
+      }, {
+        new: true
+      }, function(error, wod) {
+        socket.emit('wodUpdated', wod);
+      });
+	});
+
+  socket.on('readWod', function() {
+    console.log('on est dans readWod')
+    db.wods.findOne (
+      {name: "wod"},
+      function(error, wod) {
+        console.log(wod)
+        socket.emit('wodReaded', wod);
+      });
+  });
+
+});
+
 /**
  * Listen on provided port, on all network interfaces.
  */
