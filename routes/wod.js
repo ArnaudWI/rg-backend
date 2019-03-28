@@ -46,10 +46,24 @@ router.put('/', (req, res) => {
     }, {
       new: true
     }, function(error, wod) {
-      console.log(wod)
+      console.log(wod);
       res.json({ result: true, wod });
     });
   });
 
+  /* trouver et lire la bdd du wod. */
+    router.get('/read', (req, res) => {
+
+        wodModel.findOne({
+          name: "wod",
+        },(error, wod) => {
+          if (!wod) {
+            res.json({ result: false});
+          } else {
+            res.json({ wod });
+          }
+        });
+
+    });
 
 module.exports = router;
