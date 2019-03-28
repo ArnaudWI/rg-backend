@@ -2,30 +2,23 @@ const express = require('express');
 const router = express.Router();
 const mongoose= require('mongoose');
 
+// On crée notre propre module qui va nous servir à utiliser tous nos schemas et modèles dans plusieurs fichiers
+const db = require('../config/db');
 
-var options = { server: { socketOptions: {connectTimeoutMS: 5000, useNewUrlParser: true } }};
-mongoose.connect('mongodb://nono:mongodb69@ds119996.mlab.com:19996/ringside-user',
-    options,
-    function(err) {
-     console.log(err);
-    }
-);
-
-var userSchema = mongoose.Schema({
-    lastName: String,
-    firstName: String,
-    email: String,
-    password: String,
-    admin: Boolean
+mongoose.connect(db.config.url, db.config.options, error => {
+  if (!error) {
+    console.info('Server is running');
+  } else {
+    console.error(error);
+  };
 });
 
-var userModel = mongoose.model('users', userSchema);
 
 /* création d'un utilisateur. */
 router.post('/signup', (req, res) => {
   if (req.body.lastName !== '' && req.body.firstName !== '' &&
   req.body.email !== '' && req.body.password !== '') {
-    var newUser = new userModel ({
+    var newUser = new db.users ({
       lastName: req.body.lastName,
       firstName: req.body.firstName,
       email: req.body.email,
@@ -48,7 +41,7 @@ router.post('/signup', (req, res) => {
 /* connexion à l'app. */
 router.get('/signin', (req, res) => {
 
-    userModel.findOne({
+    db.users.findOne({
       email: req.query.email,
       password: req.query.password
     },(error, user) => {

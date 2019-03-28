@@ -2,27 +2,23 @@ const express = require('express');
 const router = express.Router();
 const mongoose= require('mongoose');
 
+// On crée notre propre module qui va nous servir à utiliser tous nos schemas et modèles dans plusieurs fichiers
+const db = require('../config/db');
 
-var options = { server: { socketOptions: {connectTimeoutMS: 5000, useNewUrlParser: true } }};
-mongoose.connect('mongodb://nono:mongodb69@ds119996.mlab.com:19996/ringside-user',
-    options,
-    function(err) {
-     console.log(err);
-    }
-);
 
-var wodSchema = mongoose.Schema({
-    name: String,
-    wod: String,
-    date: String
+mongoose.connect(db.config.url, db.config.options, error => {
+  if (!error) {
+    console.info('Server is running');
+  } else {
+    console.error(error);
+  };
 });
 
-var wodModel = mongoose.model('wods', wodSchema);
 
 /* création d'un wod (manuelle via postman). */
 router.post('/addwod', (req, res) => {
 
-    var newWod = new wodModel ({
+    var newWod = new db.wods ({
       name: req.body.name,
       wod: req.body.wod,
       date: req.body.today
@@ -38,7 +34,7 @@ router.post('/addwod', (req, res) => {
 
 /* mise à jour du wod. */
 router.put('/', (req, res) => {
-  wodModel.findOneAndUpdate (
+  db.wods.findOneAndUpdate (
     {name: "wod"},
     {
       wod: req.body.wod,
@@ -52,18 +48,17 @@ router.put('/', (req, res) => {
   });
 
   /* trouver et lire la bdd du wod. */
-    router.get('/read', (req, res) => {
+router.get('/read', (req, res) => {
 
-        wodModel.findOne({
-          name: "wod",
-        },(error, wod) => {
-          if (!wod) {
-            res.json({ result: false});
-          } else {
-            res.json({ wod });
-          }
-        });
-
+    db.wods.findOne({
+      name: "wod",
+    },(error, wod) => {
+      if (!wod) {
+        res.json({ result: false});
+      } else {
+        res.json({ wod });
+      }
     });
+});
 
 module.exports = router;
