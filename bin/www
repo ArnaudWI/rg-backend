@@ -31,28 +31,20 @@ const db = require('../config/db');
 io.on('connection', socket => {
   console.log(`${socket.id} has logged in.`);
 
-  socket.on('updateWod', function(wod , date, name) {
+  socket.on('updateWod', function(data) {
+        console.log('on est dans updateWod')
     db.wods.findOneAndUpdate (
       {name: "wod"},
       {
-        wod: wod,
-        date: date
+        wod: data.wod,
+        date: data.date
       }, {
         new: true
       }, function(error, wod) {
-        socket.emit('wodUpdated', wod);
+        console.log(wod)
+        io.emit('wodUpdated', wod);
       });
 	});
-
-  socket.on('readWod', function() {
-    console.log('on est dans readWod')
-    db.wods.findOne (
-      {name: "wod"},
-      function(error, wod) {
-        console.log(wod)
-        socket.emit('wodReaded', wod);
-      });
-  });
 
 });
 

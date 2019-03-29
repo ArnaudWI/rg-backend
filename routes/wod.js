@@ -54,7 +54,7 @@ router.get('/read', (req, res) => {
       if (!wod) {
         res.json({ result: false});
       } else {
-        res.json({ wod });
+        res.json( wod );
       }
     });
 });
