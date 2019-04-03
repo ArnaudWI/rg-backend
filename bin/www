@@ -46,6 +46,24 @@ io.on('connection', socket => {
       });
 	});
 
+  socket.on('addAnnonce', function(data) {
+        console.log('on est dans addAnnonce')
+        let newAnnonce = new db.annonces ({
+          title: data.title,
+          content: data.content,
+          type: data.type,
+          date: data.date,
+        })
+
+        newAnnonce.save(
+          (error, annonce) => {
+            db.annonces.find (
+                function (err, annonces) {
+                  io.emit('annonceAdded', annonces);
+                })
+        });
+  });
+
 });
 
 /**

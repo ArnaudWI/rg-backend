@@ -17,14 +17,13 @@ mongoose.connect(db.config.url, db.config.options, error => {
 router.get('/', (req, res) => {
   db.annonces.find (
       function (err, annonces) {
-        console.log(annonces);
-        res.json({ result: true, annonces});
+        res.json( annonces);
       })
 });
 
 /* ajout d'une annonce. */
 router.post('/add', (req, res) => {
-  var newAnnonce = new db.annonces ({
+  let newAnnonce = new db.annonces ({
     title: req.body.title,
     content: req.body.content,
     type: req.body.type,
