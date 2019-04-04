@@ -78,6 +78,27 @@ io.on('connection', socket => {
     )
   });
 
+  socket.on('updateAnnonce', function(data) {
+    console.log('on est dans updateAnnonce')
+    console.log(data)
+    db.annonces.findByIdAndUpdate(
+      data.id,
+    {
+      title: data.title,
+      content: data.content,
+      type: data.type,
+      date: data.date,
+    }, {
+      new: true
+    }, function(error, annonce) {
+      db.annonces.find(
+        function(error, annonces){
+          io.emit('annonceUpdated', annonces);
+        }
+      )
+    });
+  });
+
 
 });
 
