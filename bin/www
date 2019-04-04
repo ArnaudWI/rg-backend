@@ -64,6 +64,21 @@ io.on('connection', socket => {
         });
   });
 
+  socket.on('removeAnnonce', function(idAnnonce) {
+    console.log('on est dans removeAnnonce')
+    db.annonces.deleteOne(
+      {_id: idAnnonce},
+      function(error){
+        db.annonces.find(
+          function(error, annonces){
+            io.emit('annonceRemoved', annonces);
+          }
+        )
+      }
+    )
+  });
+
+
 });
 
 /**
