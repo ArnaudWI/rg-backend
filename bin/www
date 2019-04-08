@@ -80,7 +80,6 @@ io.on('connection', socket => {
 
   socket.on('updateAnnonce', function(data) {
     console.log('on est dans updateAnnonce')
-    console.log(data)
     db.annonces.findByIdAndUpdate(
       data.id,
     {

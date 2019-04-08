@@ -23,6 +23,7 @@ router.post('/signup', (req, res) => {
       firstName: req.body.firstName,
       email: req.body.email,
       password: req.body.password,
+      token: '',
       admin: true
     })
 
@@ -52,6 +53,21 @@ router.get('/signin', (req, res) => {
       }
     });
 });
+
+router.put('/token', (req, res) => {
+  console.log(req.body.id)
+  db.users.findOneAndUpdate (
+    {
+      _id: req.body._id,
+    },
+    {
+      token: req.body.token,
+    }, {
+      new: true
+    }, function(error, user) {
+      res.json({ user });
+    });
+  });
 
 
 module.exports = router;
