@@ -23,7 +23,7 @@ router.post('/signup', (req, res) => {
       firstName: req.body.firstName,
       email: req.body.email,
       password: req.body.password,
-      token: '',
+      token: req.body.token,
       admin: true
     })
 
@@ -54,6 +54,7 @@ router.get('/signin', (req, res) => {
     });
 });
 
+/* update du token */
 router.put('/token', (req, res) => {
   console.log(req.body.id)
   db.users.findOneAndUpdate (
@@ -69,5 +70,12 @@ router.put('/token', (req, res) => {
     });
   });
 
+  /* lecture des la bdd avant l'envoi de notification */
+  router.get('/userbeforenotification', (req, res) => {
+      db.users.find({
+      },(error, users) => {
+        res.json(users);
+      });
+  });
 
 module.exports = router;
