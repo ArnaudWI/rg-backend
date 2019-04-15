@@ -16,17 +16,20 @@ mongoose.connect(db.config.url, db.config.options, error => {
 
 /* création d'un utilisateur. */
 router.post('/signup', (req, res) => {
+  let status = false;
   if (req.body.lastName !== '' && req.body.firstName !== '' &&
-  req.body.email !== '' && req.body.password !== '') {
+  req.body.email !== '' && req.body.password !== '' && req.body.admin !== '') {
+    if (req.body.admin === '1') {
+      status = true
+    }
     var newUser = new db.users ({
       lastName: req.body.lastName,
       firstName: req.body.firstName,
       email: req.body.email,
       password: req.body.password,
       token: req.body.token,
-      admin: true
+      admin: status
     })
-
     newUser.save(
       (error, user) => {
         console.log(user)
