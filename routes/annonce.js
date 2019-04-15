@@ -53,6 +53,7 @@ router.post('/update', (req, res) => {
     res.json({ result: true , annonce});
   });
 });
+// test
 
 /* suppression d'une annonce. */
 router.post('/remove', (req, res) => {
