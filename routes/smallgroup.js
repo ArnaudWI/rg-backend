@@ -7,19 +7,18 @@ const db = require('../config/db');
 
 mongoose.connect(db.config.url, db.config.options, error => {
   if (!error) {
-    console.info('AnnonceServer is running');
+    console.info('SmallgroupsServer is running');
   } else {
     console.error(error);
   };
 });
 
-/* lecture de la bdd des annonces. */
+/* lecture de la bdd des smallgroups. */
 router.get('/', (req, res) => {
-  db.annonces.find (
-      function (err, annonces) {
-        res.json( annonces);
+  db.smallgroups.find (
+      function (err, smallgroups) {
+        res.json( smallgroups);
       })
 });
-
 
 module.exports = router;

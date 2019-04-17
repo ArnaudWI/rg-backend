@@ -46,6 +46,7 @@ io.on('connection', socket => {
       });
 	});
 
+//add d'une annonce par l'admin
   socket.on('addAnnonce', function(data) {
         console.log('on est dans addAnnonce')
         let newAnnonce = new db.annonces ({
@@ -64,6 +65,7 @@ io.on('connection', socket => {
         });
   });
 
+//suppression d'une annonce par l'admin
   socket.on('removeAnnonce', function(idAnnonce) {
     console.log('on est dans removeAnnonce')
     db.annonces.deleteOne(
@@ -78,6 +80,7 @@ io.on('connection', socket => {
     )
   });
 
+//update d'une annonce par l'admin
   socket.on('updateAnnonce', function(data) {
     console.log('on est dans updateAnnonce')
     db.annonces.findByIdAndUpdate(
@@ -93,6 +96,65 @@ io.on('connection', socket => {
       db.annonces.find(
         function(error, annonces){
           io.emit('annonceUpdated', annonces);
+        }
+      )
+    });
+  });
+
+//add d'un smallgroup par l'admin
+  socket.on('addSmallGroup', function(data) {
+        console.log('on est dans SmallGroup')
+        let newSmallGroup = new db.smallgroups ({
+          discipline: data.discipline,
+          date: data.date,
+          hour: data.hour,
+          nbrParticipants: data.nbrParticipants,
+          price: data.price,
+          programme: data.programme,
+        })
+
+        newSmallGroup.save(
+          (error, smallgroup) => {
+            db.smallgroups.find (
+                function (err, smallgroups) {
+                  io.emit('smallgroupAdded', smallgroups);
+                })
+        });
+  });
+
+//remove du smallgroup par l'admin
+  socket.on('removeSmallGroup', function(idSmallGroup) {
+    console.log('on est dans removeSmallGroup')
+    db.smallgroups.deleteOne(
+      {_id: idSmallGroup},
+      function(error){
+        db.smallgroups.find(
+          function(error, smallgroups){
+            io.emit('smallgroupRemoved', smallgroups);
+          }
+        )
+      }
+    )
+  });
+
+//update du smallgroup par l'admin
+  socket.on('updateSmallGroup', function(data) {
+    console.log('on est dans updateSmallGroup')
+    db.smallgroups.findByIdAndUpdate(
+      data.id,
+    {
+      discipline: data.discipline,
+      date: data.date,
+      hour: data.hour,
+      nbrParticipants: data.nbrParticipants,
+      price: data.price,
+      programme: data.programme,
+    }, {
+      new: true
+    }, function(error, smallgroup) {
+      db.smallgroups.find(
+        function(error, smallgroups){
+          io.emit('smallgroupUpdated', smallgroups);
         }
       )
     });

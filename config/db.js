@@ -9,6 +9,7 @@ const db = {
   users: require('./models/users'),
   wods : require('./models/wods'),
   annonces : require('./models/annonces'),
+  smallgroups : require('./models/smallgroups'),
 };
 
 module.exports = db;
