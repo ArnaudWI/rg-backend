@@ -160,6 +160,63 @@ io.on('connection', socket => {
     });
   });
 
+  //ajouter un participant au smallgroup
+  socket.on('addParticipant', function(data) {
+  console.log('on est dans addParticipant')
+  db.smallgroups.findByIdAndUpdate(
+    data.idSmallGroup,
+  {
+    $push: {
+      participantList: {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        idUser: data.idUser
+      }
+    }
+  }, {
+    new: true
+  }, function(error, smallgroup) {
+    db.smallgroups.findById(
+      data.idSmallGroup,
+       function(error, smallgroup){
+        io.emit('participantAdded', smallgroup);
+      }
+    )
+    db.smallgroups.find(
+      function(error, smallgroups){
+        io.emit('smallgroupUpdated', smallgroups);
+      }
+    )
+  });
+});
+
+//suppression du participant au smallgroup
+  socket.on('removeParticipant', function(data) {
+  console.log('on est dans removeParticipant')
+  db.smallgroups.findByIdAndUpdate(
+    data.idSmallGroup,
+  {
+    $pull: {
+      participantList: {
+        idUser: data.idUser
+      }
+    }
+  }, {
+    new: true
+  }, function(error, smallgroup) {
+    db.smallgroups.findById(
+      data.idSmallGroup,
+       function(error, smallgroup){
+        io.emit('participantRemoved', smallgroup);
+      }
+    )
+    db.smallgroups.find(
+      function(error, smallgroups){
+        io.emit('smallgroupUpdated', smallgroups);
+      }
+    )
+  });
+});
 
 });
 

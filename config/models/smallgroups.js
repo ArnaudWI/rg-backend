@@ -9,7 +9,8 @@ const smallgroupSchema = mongoose.Schema({
     programme: String,
     participantList: [{
       firstName: String,
-      lastName: String
+      lastName: String,
+      idUser: String
     }]
 });
 
