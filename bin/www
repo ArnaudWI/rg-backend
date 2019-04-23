@@ -101,6 +101,14 @@ io.on('connection', socket => {
     });
   });
 
+//lecture des smallgroups
+  socket.on('readSmallGroup', function(data) {
+      db.smallgroups.find (
+        function (err, smallgroups) {
+          io.emit('smallgroupReaded', smallgroups);
+      })
+  });
+
 //add d'un smallgroup par l'admin
   socket.on('addSmallGroup', function(data) {
         console.log('on est dans SmallGroup')
