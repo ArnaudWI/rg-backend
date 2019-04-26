@@ -10,6 +10,7 @@ const db = {
   wods : require('./models/wods'),
   annonces : require('./models/annonces'),
   smallgroups : require('./models/smallgroups'),
+  rdvtrainings : require('./models/rdvtrainings'),
 };
 
 module.exports = db;

@@ -226,6 +226,65 @@ io.on('connection', socket => {
   });
 });
 
+//add d'un rdvtraining
+  socket.on('addRDVTraining', function(data) {
+        console.log('on est dans addRDVTraining')
+        let newSmallGroup = new db.rdvtrainings ({
+          discipline: data.discipline,
+          date: data.date,
+          auteur: data.auteur,
+          content: data.content,
+        })
+
+        newSmallGroup.save(
+          (error, rdvtraining) => {
+            db.rdvtrainings.find (
+                function (err, rdvtrainings) {
+                  io.emit('rdvtrainingAdded', rdvtrainings);
+                })
+        });
+  });
+
+//remove du rdvtraining par l'admin
+  socket.on('removeRDVTraining', function(idRDVTraining) {
+    console.log('on est dans removeSmallGroup')
+    console.log(idRDVTraining)
+    db.rdvtrainings.deleteOne(
+      {_id: idRDVTraining},
+      function(error){
+        db.rdvtrainings.find(
+          function(error, rdvtrainings){
+            io.emit('rdvtrainingRemoved', rdvtrainings);
+          }
+        )
+      }
+    )
+  });
+
+  //ajouter une réponse à un rdv training
+  socket.on('addResponse', function(data) {
+  console.log('on est dans addResponse')
+  db.rdvtrainings.findByIdAndUpdate(
+    data.idrdvtrainings,
+  {
+    $push: {
+      responseList: {
+        responseAuteur: data.responseAuteur,
+        responseContent: data.responseContent
+      }
+    }
+  }, {
+    new: true
+  }, function(error, rdvtraining) {
+    db.rdvtrainings.findById(
+      data.idrdvtrainings,
+       function(error, rdvtraining){
+        io.emit('responseAdded', rdvtraining.responseList);
+      }
+    )
+  });
+});
+
 });
 
 /**
