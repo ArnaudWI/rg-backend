@@ -31,6 +31,7 @@ const db = require('../config/db');
 io.on('connection', socket => {
   console.log(`${socket.id} has logged in.`);
 
+//update du wod
   socket.on('updateWod', function(data) {
         console.log('on est dans updateWod')
     db.wods.findOneAndUpdate (
@@ -284,6 +285,43 @@ io.on('connection', socket => {
     )
   });
 });
+
+//update des données de l'utilisateur
+  socket.on('updateUser', function(data) {
+    console.log('on est dans updateUser')
+    db.users.findByIdAndUpdate(
+      data.id,
+    {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      password: data.password,
+    }, {
+      new: true
+    }, function(error, user) {
+      db.users.find(
+        function(error, users){
+          io.emit('userUpdated', users);
+        }
+      )
+    });
+  });
+
+  //remove d'un user par l'admin
+    socket.on('removeUser', function(idUser) {
+      console.log('on est dans removeUser')
+      console.log(idUser)
+      db.users.deleteOne(
+        {_id: idUser},
+        function(error){
+          db.users.find(
+            function(error, users){
+              io.emit('userRemoved', users);
+            }
+          )
+        }
+      )
+    });
 
 });
 
